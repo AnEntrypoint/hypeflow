@@ -1,2 +1,2 @@
 # hypeflow
-running flow charts over p2p
+running hypeflow charts over p2p 
