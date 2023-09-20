@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
-    "preview": "vite preview",
+    "preview": "vite preview --host --port 5173",
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "devDependencies": {
@@ -15,10 +15,17 @@
     "svelte": "^3.58.0",
     "svelte-check": "^3.3.1",
     "tslib": "^2.5.0",
-    "typescript": "^5.0.2",
     "vite": "^4.3.2"
   },
   "dependencies": {
+    "@codemirror/lang-javascript": "^6.2.1",
+    "@codemirror/theme-one-dark": "^6.1.2",
+    "monaco-editor": "^0.43.0",
+    "prismjs": "^1.29.0",
+    "svelte-ace": "^1.0.21",
+    "svelte-codemirror-editor": "^1.1.0",
+    "svelte-jsoneditor": "^0.18.3",
+    "svelte-simple-code-editor": "^0.0.2",
     "svelvet": "^7.0.48"
   }
 }
