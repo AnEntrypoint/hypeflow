@@ -2,8 +2,15 @@
   import { Svelvet, ThemeToggle } from "svelvet";
   import Call from "./lib/tables/Call.svelte";
   import crypto from "hypercore-crypto";
-  const kp = crypto.keyPair();
-  console.log(kp);
+  import b4a from "b4a";
+  let seed = '';
+  let kp = crypto.keyPair();
+
+  const newSeed = (event)=>{
+    console.log(event.target.value);
+    kp = crypto.keyPair(crypto.data(b4a.from(event.target.value, 'utf-8')))
+    console.log({kp})
+  }
   let calls = [];
   let newName;
   const add = () => {
@@ -97,11 +104,22 @@
       >
       <input
         style="position: absolute;left: 23px;color:gray;padding-left: 1em;z-index: -1;"
+        placeholder="new ipc call name"
         bind:value={newName}
         class="rounded-full"
       />
     </div>
-  </div>
+    <div style="position: fixed;right: 1em;top: 1em;font-weight: bolder;">
+
+    <input
+    style="position: absolute;right: 23px;color:gray;padding-left: 1em;z-index: -1;"
+    placeholder="seed"
+    bind:value={seed}
+    on:change={newSeed}
+    class="rounded-full"
+    />
+    </div>
+</div>
 </body>
 
 <style>
