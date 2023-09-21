@@ -8,13 +8,16 @@ import goodbye from 'graceful-goodbye';
 const node = ipc();
 
 global.kp = crypto.keyPair(crypto.data(b4a.from('seedy')));
-node.serve(kp, 'testy', inp=>{console.log(inp); return inp});
+node.serve(kp, 'testy', inp=>{
+    console.log({inp});
+    const outp={...inp, hello:'world'};console.log("OUTPUT", outp); return outp;
+});
 
 global.kp = crypto.keyPair(crypto.data(b4a.from('seedy')));
-node.serve(kp, 'testy', inp=>{console.log(inp); return inp});
 const app = express()
 const port = process.env.PORT || 3011
 app.use(express.json())
+app.use(express.urlencoded())
 console.log(node)
 app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', 'https://svelvet.lan.247420.xyz');

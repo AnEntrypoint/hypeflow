@@ -34,16 +34,23 @@
   };
   const run = () => {
     const runCall = async (call, input={}) => {
+      console.log({call, input})
       const pk = toHexString(kp.publicKey);
       const url = `https://node.lan.247420.xyz/run/${pk}/${call.name}`;
-      const params = Object.assign({},JSON.stringify(call.params.json));
+      const params = Object.assign({},call.params.json);
+      console.log({calljson:call.params.json, params})
       
-      const fetched = await fetch(url, {method:'POST',body:Object.assign(params, input)});
-      const output = await fetched.text();
-      console.log({output});
+      const fetched = await fetch(url, {
+        headers: {"Content-Type": "application/json"},
+        method:'POST',
+        body:JSON.stringify(Object.assign(params, input))
+      });
+      console.log({params, input}, {method:'POST',body:JSON.stringify(Object.assign(params, input))})
+      const out = await fetched.json();
+      console.log({out});
       if (call.output.length) {
         for (let output of call.output) {
-          await runCall(calls[output.split("-")[1]], output);
+          await runCall(calls[output.split("-")[1]], out);
         }
       }
     };
