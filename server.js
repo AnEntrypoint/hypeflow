@@ -2,10 +2,16 @@ import Keychain from 'keypear'
 import express from 'express'
 import crypto from 'hypercore-crypto';
 import ipc from 'hyper-ipc-secure';
+import b4a from 'b4a';
 import goodbye from 'graceful-goodbye';
 
 const node = ipc();
-global.kp = crypto.keyPair();
+
+global.kp = crypto.keyPair(crypto.data(b4a.from('seedy')));
+node.serve(kp, 'testy', inp=>{console.log(inp); return inp});
+
+global.kp = crypto.keyPair(crypto.data(b4a.from('seedy')));
+node.serve(kp, 'testy', inp=>{console.log(inp); return inp});
 const app = express()
 const port = process.env.PORT || 3011
 app.use(express.json())
@@ -36,7 +42,7 @@ const run = (req, res) => {
         res.status(500).end()
     });
 }
-app.get("/:pk/:actionname", run)
+app.get("/run/:pk/:actionname", run)
 app.post("/run/:pk/:actionname", run)
 
 app.listen(port, () => {

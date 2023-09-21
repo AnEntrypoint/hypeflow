@@ -6,10 +6,15 @@
   let seed = '';
   let kp = crypto.keyPair();
 
+  const toHexString = (bytes) => {
+  return Array.from(bytes, (byte) => {
+    return ('0' + (byte & 0xff).toString(16)).slice(-2);
+  }).join('');
+};
   const newSeed = (event)=>{
     console.log(event.target.value);
     kp = crypto.keyPair(crypto.data(b4a.from(event.target.value, 'utf-8')))
-    console.log({kp})
+    console.log(toHexString(kp.publicKey));
   }
   let calls = [];
   let newName;
@@ -27,11 +32,6 @@
   const save = () => {
     console.log(calls);
   };
-  const toHexString = (bytes) => {
-  return Array.from(bytes, (byte) => {
-    return ('0' + (byte & 0xff).toString(16)).slice(-2);
-  }).join('');
-};
   const run = () => {
     const runCall = async (call, input={}) => {
       const pk = toHexString(kp.publicKey);
