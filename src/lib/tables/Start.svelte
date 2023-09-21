@@ -1,23 +1,20 @@
 <script>
-    import { generateInput, generateOutput, Node, Anchor } from "svelvet";
-
-
+    import { Node, Anchor } from "svelvet";
     export let name, id;
   </script>
   
-  <Node useDefaults id="vessel" let:grabHandle let:selected >
+  <Node useDefaults id="start" let:grabHandle let:selected position={{y:250,x:200}} >
     <div class="nodeWrapper" use:grabHandle>
       <div class="output">
         <Anchor
           id="{id}_object"
-          output={true}
-          input={true}
+          output
           direction="east"
-          nodeConnect={true}
+          nodeConnect
         />
       </div>
       <div id="container">
-        <div id="heading" class="w-full"><span contenteditable style="cursor: text;" bind:innerHTML={name} on:keydown|stopPropagation on:click|stopPropagation on:mousedown|stopPropagation></span></div>
+        <div id="heading" class="w-full"><span style="cursor: text;" on:keydown|stopPropagation on:click|stopPropagation on:mousedown|stopPropagation></span></div>
         Starting point for execution
       </div>
     </div>
