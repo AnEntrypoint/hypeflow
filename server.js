@@ -8,9 +8,9 @@ import goodbye from 'graceful-goodbye';
 const node = ipc();
 
 global.kp = crypto.keyPair(crypto.data(b4a.from('seedy')));
-node.serve(kp, 'testy', inp=>{
-    console.log({inp});
-    const outp={...inp, hello:'world'};console.log("OUTPUT", outp); return outp;
+node.serve(kp, 'testy', inp => {
+    console.log({ inp });
+    const outp = { ...inp, hello: 'world' }; console.log("OUTPUT", outp); return outp;
 });
 
 global.kp = crypto.keyPair(crypto.data(b4a.from('seedy')));
@@ -26,7 +26,7 @@ app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Credentials', true);
     next();
 });
-const run = (req, res) => {
+const run = async (req, res) => {
     var params = req.params;
     let body, pk = req.params.pk;
     try {
@@ -35,15 +35,18 @@ const run = (req, res) => {
         body = req.body
     }
     const args = { ...req.params };
+
     delete args.actionname;
     delete args.pk
-    node.run(Buffer.from(pk, 'hex'), params.actionname, body || args).then(a => {
-        res.write(JSON.stringify(a))
+    try {
+        const a = await node.run(Buffer.from(pk, 'hex'), params.actionname, body || args);
+        if(typeof a == 'object') res.write(JSON.stringify(a))
+        else if(typeof a == 'string') res.write(a)
         res.status(200).end()
-    }).catch((err) => {
+    } catch(err) {
         res.write(JSON.stringify(err))
         res.status(500).end()
-    });
+    }
 }
 app.get("/run/:pk/:actionname", run)
 app.post("/run/:pk/:actionname", run)

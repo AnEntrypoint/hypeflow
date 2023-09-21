@@ -1,11 +1,11 @@
 
 <script>
-  import { generateInput, generateOutput, Node, Anchor } from "svelvet";
-  import { JSONEditor } from "svelte-jsoneditor";
+  import { Node, Anchor } from "svelvet";
   import CodeMirror from "svelte-codemirror-editor";
   import { javascript } from "@codemirror/lang-javascript";
+  import { json } from "@codemirror/lang-json";
   import { oneDark } from "@codemirror/theme-one-dark";
-  export let params,name, before, after, id, x ,y, output;
+  export let params,name, before, after, id, x ,y, output, stdout, stderr;
 </script>
 <Node useDefaults id={id} let:grabHandle let:selected  position={{ x, y }} >
   <div class="nodeWrapper" use:grabHandle>
@@ -35,11 +35,12 @@
         on:keydown|stopPropagation
         on:click|stopPropagation
         on:mousedown|stopPropagation
-        style="outline-style: solid;margin:4px; margin-bottom: 8px;outline-color: darkgreen;outline-width: 2px;cursor: text;"
+        style="outline-style: solid;margin:4px; margin-bottom: 8px;outline-color: gray;outline-width: 2px;cursor: text;"
       >
-        Parameters:
-        <JSONEditor bind:content={params} readOnly={false} />
+        Params:
+        <CodeMirror bind:value={params} lang={json()} theme={oneDark} />
       </div>
+
       <!--div class="node" class:selected on:keydown|stopPropagation on:click|stopPropagation on:mousedown|stopPropagation><CodeMirror bind:value={content} theme={oneDark} /></div-->
       <div
         class="node"
@@ -47,7 +48,7 @@
         on:keydown|stopPropagation
         on:click|stopPropagation
         on:mousedown|stopPropagation
-        style="outline-style: solid;margin:4px; margin-bottom: 8px;outline-color: darkgreen;outline-width: 2px;cursor: text;"
+        style="outline-style: solid;margin:4px; margin-bottom: 8px;outline-color: yellow;outline-width: 2px;cursor: text;"
       >
         Before:
         <CodeMirror bind:value={before} lang={javascript()} theme={oneDark} />
@@ -59,11 +60,35 @@
         on:keydown|stopPropagation
         on:click|stopPropagation
         on:mousedown|stopPropagation
-        style="outline-style: solid;margin:4px; margin-top: 8px;outline-color: darkred;outline-width: 2px;cursor: text;"
+        style="outline-style: solid;margin:4px; margin-top: 8px;outline-color: orange;outline-width: 2px;cursor: text;"
       >
         After:
         <CodeMirror bind:value={after} lang={javascript()}  theme={oneDark} />
       </div>
+      <div
+        class="node"
+        class:selected
+        on:keydown|stopPropagation
+        on:click|stopPropagation
+        on:mousedown|stopPropagation
+        style="outline-style: solid;margin:4px; margin-bottom: 8px;outline-color: green;outline-width: 2px;cursor: text;"
+      >
+        Logs:
+        <CodeMirror value={stdout} lang={javascript()} readonly theme={oneDark} />
+      </div>
+
+      <div
+        class="node"
+        class:selected
+        on:keydown|stopPropagation
+        on:click|stopPropagation
+        on:mousedown|stopPropagation
+        style="outline-style: solid;margin:4px; margin-top: 8px;outline-color: darkred;outline-width: 2px;cursor: text;"
+      >
+        Error:
+        <CodeMirror value={stderr} lang={javascript()} readonly theme={oneDark} />
+      </div>
+
     </div>
   </div>
 </Node>

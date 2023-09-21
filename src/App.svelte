@@ -12,9 +12,8 @@
   }).join('');
 };
   const newSeed = (event)=>{
-    console.log(event.target.value);
     kp = crypto.keyPair(crypto.data(b4a.from(event.target.value, 'utf-8')))
-    console.log(toHexString(kp.publicKey));
+    console.log('new base pk', toHexString(kp.publicKey));
   }
   let calls = [];
   let newName;
@@ -22,10 +21,12 @@
     const newcalls = [...calls];
     newcalls.push({
       name: newName,
-      params: { json: {} },
+      params: "{}",
       before: "console.log('before call', {params});",
       after: "console.log('after call', {out});",
       output: [],
+      stdout: null,
+      stderr: null,
     });
     calls = newcalls;
   };
@@ -34,11 +35,9 @@
   };
   const run = () => {
     const runCall = async (call, input={}) => {
-      console.log({call, input})
       const pk = toHexString(kp.publicKey);
       const url = `https://node.lan.247420.xyz/run/${pk}/${call.name}`;
-      const params = Object.assign({},call.params.json);
-      console.log({calljson:call.params.json, params})
+      const params = JSON.parse(call.params);
       const paramsWithInput = Object.assign(params, input);
       eval(call.before);
       const fetched = await fetch(url, {
@@ -48,7 +47,12 @@
       });
       const out = await fetched.json();
       eval(call.after);
-      console.log({out});
+      call.stdout = out.stdout;
+      call.stderr = out.stderr;
+      delete out.stdout;
+      delete out.stderr;
+      calls=calls;
+      console.log(call);
       if (call.output.length) {
         for (let output of call.output) {
           await runCall(calls[output.split("-")[1]], out);
@@ -75,7 +79,7 @@
 
 <body>
   <Svelvet minimap controls on:connection={handleConnection}>
-    {#each calls as { name, params, before, after, output }, index}
+    {#each calls as { name, params, before, after, output, stdout, stderr }, index}
       <Call
         id={"call-" + index}
         bind:name
@@ -83,6 +87,8 @@
         bind:before
         bind:after
         bind:output
+        bind:stdout
+        bind:stderr
         x={500 + index * 500}
         y={250}
       />
