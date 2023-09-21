@@ -23,8 +23,8 @@
     newcalls.push({
       name: newName,
       params: { json: {} },
-      before: "console.log('before call');",
-      after: "console.log('after call');",
+      before: "console.log('before call', {params});",
+      after: "console.log('after call', {out});",
       output: [],
     });
     calls = newcalls;
@@ -39,14 +39,15 @@
       const url = `https://node.lan.247420.xyz/run/${pk}/${call.name}`;
       const params = Object.assign({},call.params.json);
       console.log({calljson:call.params.json, params})
-      
+      const paramsWithInput = Object.assign(params, input);
+      eval(call.before);
       const fetched = await fetch(url, {
         headers: {"Content-Type": "application/json"},
         method:'POST',
-        body:JSON.stringify(Object.assign(params, input))
+        body:JSON.stringify(paramsWithInput)
       });
-      console.log({params, input}, {method:'POST',body:JSON.stringify(Object.assign(params, input))})
       const out = await fetched.json();
+      eval(call.after);
       console.log({out});
       if (call.output.length) {
         for (let output of call.output) {
@@ -80,8 +81,8 @@
         bind:name
         bind:params
         bind:before
+        bind:after
         bind:output
-        {after}
         x={500 + index * 500}
         y={250}
       />
