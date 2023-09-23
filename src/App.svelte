@@ -3,18 +3,18 @@
   import Call from "./lib/tables/Call.svelte";
   import crypto from "hypercore-crypto";
   import b4a from "b4a";
-  let seed = '';
+  let seed = "";
   let kp = crypto.keyPair();
 
   const toHexString = (bytes) => {
-  return Array.from(bytes, (byte) => {
-    return ('0' + (byte & 0xff).toString(16)).slice(-2);
-  }).join('');
-};
-  const newSeed = (event)=>{
-    kp = crypto.keyPair(crypto.data(b4a.from(event.target.value, 'utf-8')))
-    console.log('new base pk', toHexString(kp.publicKey));
-  }
+    return Array.from(bytes, (byte) => {
+      return ("0" + (byte & 0xff).toString(16)).slice(-2);
+    }).join("");
+  };
+  const newSeed = (event) => {
+    kp = crypto.keyPair(crypto.data(b4a.from(event.target.value, "utf-8")));
+    console.log("new base pk", toHexString(kp.publicKey));
+  };
   let calls = [];
   let newName;
   const add = () => {
@@ -30,29 +30,41 @@
     });
     calls = newcalls;
   };
+  const refresh = () => {
+    const newcalls = [...calls];
+    calls = newcalls;
+  };
   const save = () => {
     console.log(calls);
   };
   const run = (calls) => {
-    const runCall = async (call, input={}) => {
+    const runCall = async (call, input = {}) => {
       const pk = toHexString(kp.publicKey);
       const url = `https://node.lan.247420.xyz/run/${pk}/${call.name}`;
       const params = JSON.parse(call.params);
       const paramsWithInput = Object.assign(params, input);
-      eval(call.before);
+      call.stdout = '';
+      call.stderr = '';
+      (()=>{
+        let console = {log: (val)=>{call.stdout = call.stdout + '\n' + val}}
+        eval(call.before);
+      })()
       const fetched = await fetch(url, {
-        headers: {"Content-Type": "application/json"},
-        method:'POST',
-        body:JSON.stringify(paramsWithInput)
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+        body: JSON.stringify(paramsWithInput),
       });
       const out = await fetched.json();
-      eval(call.after);
-      call.stdout = out.stdout;
-      call.stderr = out.stderr;
+      (()=>{
+        let console = {log: (val)=>{call.stdout = call.stdout + '\n' + val}}
+        eval(call.after);
+      })()
+      call.stdout += out.stdout||'';
+      call.stderr += out.stderr||'';
       delete out.stdout;
       delete out.stderr;
-      calls=calls;
-      console.log(call);
+      console.log('refreshing', {calls});
+      refresh();
       if (call.output.length) {
         for (let output of call.output) {
           await runCall(calls[output.split("-")[1]], out);
@@ -103,7 +115,9 @@
     >SAVE</button
   >
   <button
-    on:click|stopPropagation={()=>{run(calls)}}
+    on:click|stopPropagation={() => {
+      run(calls);
+    }}
     style="position:fixed; left:20em; top:1em; padding:4px; padding-bottom:6px;font-weight: bolder; "
     class="inline-flex text-green-100 transition-colors duration-150 bg-green-700 rounded-full focus:shadow-outline hover:bg-green-800"
     >RUN</button
@@ -124,16 +138,15 @@
       />
     </div>
     <div style="position: fixed;right: 1em;top: 1em;font-weight: bolder;">
-
-    <input
-    style="position: absolute;right: 23px;color:gray;padding-left: 1em;z-index: -1;"
-    placeholder="seed"
-    bind:value={seed}
-    on:change={newSeed}
-    class="rounded-full"
-    />
+      <input
+        style="position: absolute;right: 23px;color:gray;padding-left: 1em;z-index: -1;"
+        placeholder="seed"
+        bind:value={seed}
+        on:change={newSeed}
+        class="rounded-full"
+      />
     </div>
-</div>
+  </div>
 </body>
 
 <style>

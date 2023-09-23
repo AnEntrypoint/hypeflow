@@ -17,7 +17,7 @@ global.kp = crypto.keyPair(crypto.data(b4a.from('seedy')));
 const app = express()
 const port = process.env.PORT || 3011
 app.use(express.json())
-app.use(express.urlencoded())
+app.use(express.urlencoded({ extended: true }))
 app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', 'https://svelvet.lan.247420.xyz');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
@@ -75,9 +75,12 @@ const runTask = (calls) => {
     } catch(err) {
         res.write(JSON.stringify(err))
         res.status(500).end()
+        process.exit()
+
     }
 }
 const run = async (req, res) => {
+    console.log('run called');
     var params = req.params;
     let body, pk = req.params.pk;
     try {
@@ -90,6 +93,7 @@ const run = async (req, res) => {
     delete args.actionname;
     delete args.pk
     try {
+        console.log('running', pk, params)
         const a = await node.run(Buffer.from(pk, 'hex'), params.actionname, body || args);
         if(typeof a == 'object') res.write(JSON.stringify(a))
         else if(typeof a == 'string') res.write(a)
@@ -97,6 +101,7 @@ const run = async (req, res) => {
     } catch(err) {
         res.write(JSON.stringify(err))
         res.status(500).end()
+        process.exit()
     }
 }
 app.get("/run/:pk/:actionname", run)

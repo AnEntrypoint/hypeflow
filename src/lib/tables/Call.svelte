@@ -41,7 +41,6 @@
         <CodeMirror bind:value={params} lang={json()} theme={oneDark} />
       </div>
 
-      <!--div class="node" class:selected on:keydown|stopPropagation on:click|stopPropagation on:mousedown|stopPropagation><CodeMirror bind:value={content} theme={oneDark} /></div-->
       <div
         class="node"
         class:selected
@@ -65,6 +64,7 @@
         After:
         <CodeMirror bind:value={after} lang={javascript()}  theme={oneDark} />
       </div>
+      {#if stdout&&stdout.length}
       <div
         class="node"
         class:selected
@@ -76,7 +76,8 @@
         Logs:
         <CodeMirror value={stdout} lang={javascript()} readonly theme={oneDark} />
       </div>
-
+      {/if}
+      {#if stderr&&stderr.length}
       <div
         class="node"
         class:selected
@@ -88,7 +89,7 @@
         Error:
         <CodeMirror value={stderr} lang={javascript()} readonly theme={oneDark} />
       </div>
-
+      {/if}
     </div>
   </div>
 </Node>
