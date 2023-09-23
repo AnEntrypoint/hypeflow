@@ -33,7 +33,7 @@
   const save = () => {
     console.log(calls);
   };
-  const run = () => {
+  const run = (calls) => {
     const runCall = async (call, input={}) => {
       const pk = toHexString(kp.publicKey);
       const url = `https://node.lan.247420.xyz/run/${pk}/${call.name}`;
@@ -103,7 +103,7 @@
     >SAVE</button
   >
   <button
-    on:click|stopPropagation={run}
+    on:click|stopPropagation={()=>{run(calls)}}
     style="position:fixed; left:20em; top:1em; padding:4px; padding-bottom:6px;font-weight: bolder; "
     class="inline-flex text-green-100 transition-colors duration-150 bg-green-700 rounded-full focus:shadow-outline hover:bg-green-800"
     >RUN</button

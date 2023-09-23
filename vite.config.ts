@@ -5,7 +5,9 @@ import { svelte } from '@sveltejs/vite-plugin-svelte'
 export default defineConfig({
   plugins: [svelte()],
   optimizeDeps: {
-    exclude: ["codemirror", "@codemirror/language-javascript",
+    exclude: [
+    "codemirror",
+    "@codemirror/language-javascript",
     "@codemirror/autocomplete",
     "@codemirror/commands",
     "@codemirror/lang-javascript",
