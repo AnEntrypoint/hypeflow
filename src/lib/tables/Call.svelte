@@ -5,7 +5,8 @@
   import { javascript } from "@codemirror/lang-javascript";
   import { json } from "@codemirror/lang-json";
   import { oneDark } from "@codemirror/theme-one-dark";
-  export let params,name, before, after, id, x ,y, output, stdout, stderr;
+  export let params,name, before, after, id, x ,y, output, stdout, stderr, result;
+  console.log({result})
 </script>
 <Node useDefaults id={id} let:grabHandle let:selected  position={{ x, y }} >
   <div class="nodeWrapper" use:grabHandle>
@@ -50,7 +51,7 @@
         style="outline-style: solid;margin:4px; margin-bottom: 8px;outline-color: yellow;outline-width: 2px;cursor: text;"
       >
         Before:
-        <CodeMirror bind:value={before} lang={javascript()} theme={oneDark} />
+        <CodeMirror bind:value={before} placeholder="console.log('before call', params);" lang={javascript()} theme={oneDark} />
       </div>
 
       <div
@@ -62,7 +63,7 @@
         style="outline-style: solid;margin:4px; margin-top: 8px;outline-color: orange;outline-width: 2px;cursor: text;"
       >
         After:
-        <CodeMirror bind:value={after} lang={javascript()}  theme={oneDark} />
+        <CodeMirror bind:value={after} placeholder="console.log('after call', out);" lang={javascript()}  theme={oneDark} />
       </div>
       {#if stdout&&stdout.length}
       <div
@@ -88,6 +89,19 @@
       >
         Error:
         <CodeMirror value={stderr} lang={javascript()} readonly theme={oneDark} />
+      </div>
+      {/if}
+      {#if output}
+      <div
+        class="node"
+        class:selected
+        on:keydown|stopPropagation
+        on:click|stopPropagation
+        on:mousedown|stopPropagation
+        style="outline-style: solid;margin:4px; margin-top: 8px;outline-color: darkred;outline-width: 2px;cursor: text;"
+      >
+        Result:
+        <CodeMirror value={result} lang={json()} readonly theme={oneDark} />
       </div>
       {/if}
     </div>

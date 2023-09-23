@@ -22,8 +22,9 @@
     newcalls.push({
       name: newName,
       params: "{}",
-      before: "console.log('before call', {params});",
-      after: "console.log('after call', {out});",
+      before: "",
+      after: "",
+      result: "{}",
       output: [],
       stdout: null,
       stderr: null,
@@ -45,25 +46,19 @@
       const paramsWithInput = Object.assign(params, input);
       call.stdout = '';
       call.stderr = '';
-      (()=>{
-        let console = {log: (val)=>{call.stdout = call.stdout + '\n' + val}}
-        eval(call.before);
-      })()
+      eval("const console = {log: (...val)=>{call.stdout = call.stdout + val.map(v=>JSON.stringify(v, null, 2)).join(' ')}};"+call.before);
       const fetched = await fetch(url, {
         headers: { "Content-Type": "application/json" },
         method: "POST",
         body: JSON.stringify(paramsWithInput),
       });
       const out = await fetched.json();
-      (()=>{
-        let console = {log: (val)=>{call.stdout = call.stdout + '\n' + val}}
-        eval(call.after);
-      })()
+      eval("const console = {log: (...val)=>{call.stdout = call.stdout +\"\\n\"+ val.map(v=>JSON.stringify(v, null, 2)).join(' ')}};"+call.after);
       call.stdout += out.stdout||'';
       call.stderr += out.stderr||'';
       delete out.stdout;
       delete out.stderr;
-      console.log('refreshing', {calls});
+      call.result = JSON.stringify(out, null, 2)
       refresh();
       if (call.output.length) {
         for (let output of call.output) {
@@ -91,7 +86,7 @@
 
 <body>
   <Svelvet minimap controls on:connection={handleConnection}>
-    {#each calls as { name, params, before, after, output, stdout, stderr }, index}
+    {#each calls as { name, params, before, after, output, stdout, stderr, result }, index}
       <Call
         id={"call-" + index}
         bind:name
@@ -101,6 +96,7 @@
         bind:output
         bind:stdout
         bind:stderr
+        bind:result
         x={500 + index * 500}
         y={250}
       />
