@@ -1,7 +1,6 @@
 <script>
   import { Svelvet, ThemeToggle } from "svelvet";
   import Call from "./lib/tables/Call.svelte";
-  import Drawer from "./lib/Drawer.svelte";
   import crypto from "hypercore-crypto";
   import b4a from "b4a";
   import runCall from "./runCall";
@@ -115,27 +114,71 @@
 
     <ThemeToggle main="dark" alt="light" slot="toggle" />
   </Svelvet>
-  <body>
-    <Svelvet minimap controls on:connection={handleConnection}>
-      {#each calls as { name, params, before, after, output, stdout, stderr, result }, index}
-        <Call
-          id={"call-" + index}
-          bind:name
-          bind:params
-          bind:before
-          bind:after
-          bind:output
-          bind:stdout
-          bind:stderr
-          bind:result
-          x={500 + index * 500}
-          y={250}
-        />
-      {/each}
-
-      <ThemeToggle main="dark" alt="light" slot="toggle" />
-    </Svelvet>
-  </body>
+  <button
+    on:click|stopPropagation={() => {
+      run(calls);
+    }}
+    style="position:fixed; left:20em; top:1em; padding:4px; padding-bottom:6px;font-weight: bolder; "
+    class="inline-flex text-green-100 transition-colors duration-150 bg-green-700 rounded-full focus:shadow-outline hover:bg-green-800"
+    >TEST</button
+  >
+  <input
+    style="position: fixed;left: 23em;color:gray;padding-left: 1em;top:1em; margin-top:4px"
+    placeholder="Task name"
+    bind:value={taskName}
+    class="rounded-full"
+  />
+  <button
+  on:click|stopPropagation={() => {
+    save(calls, taskName);
+  }}
+  style="position:fixed; left:36em; top:1em; padding:4px; padding-bottom:6px;font-weight: bolder; "
+    class="inline-flex text-blue-100 transition-colors duration-150 bg-blue-700 rounded-full focus:shadow-outline hover:bg-blue-800"
+    >SAVE</button
+  >
+  <button
+    on:click|stopPropagation={() => {
+      runOnServer(taskName);
+    }}
+    style="position:fixed; left:39em; top:1em; padding:4px; padding-bottom:6px;font-weight: bolder; "
+    class="inline-flex text-green-100 transition-colors duration-150 bg-green-700 rounded-full focus:shadow-outline hover:bg-green-800"
+  >
+    RUN
+  </button>
+  <button
+  on:click|stopPropagation={() => {
+    load(taskName);
+  }}
+  style="position:fixed; left:42em; top:1em; padding:4px; padding-bottom:6px;font-weight: bolder; "
+  class="inline-flex text-green-100 transition-colors duration-150 bg-green-700 rounded-full focus:shadow-outline hover:bg-green-800"
+>
+  LOAD
+</button>
+  <div style="position: fixed;left: 1em;top: 1em;font-weight: bolder;">
+    <div
+      class="inline-flex items-center justify-center w-8 h-8 mr-2 text-pink-100 transition-colors duration-150 bg-pink-700 rounded-full focus:shadow-outline hover:bg-pink-800"
+    >
+      <button
+        on:click|stopPropagation={add}
+        style="padding-bottom: 8px;font-size: 2em;">+</button
+      >
+      <input
+        style="position: absolute;left: 23px;color:gray;padding-left: 1em;z-index: -1;"
+        placeholder="new ipc call name"
+        bind:value={newName}
+        class="rounded-full"
+      />
+    </div>
+    <div style="position: fixed;right: 1em;top: 1em;font-weight: bolder;">
+      <input
+        style="position: absolute;right: 23px;color:gray;padding-left: 1em;z-index: -1;"
+        placeholder="seed"
+        bind:value={seed}
+        on:change={newSeed}
+        class="rounded-full"
+      />
+    </div>
+  </div>
 </body>
 
 <style>
