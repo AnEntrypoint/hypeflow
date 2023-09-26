@@ -24,7 +24,7 @@ const run = async (input) => {
     })
     apiHandle.consume((fn) => context.setProp(context.global, "api", fn))
     const result = await context.evalCodeAsync(input)
-
+    console.log({result});
     return new Promise(async (resolve) => {
         if (result.error) {
             resolve({ error: context.dump(result.error) })

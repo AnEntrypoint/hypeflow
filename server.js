@@ -21,7 +21,7 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.use('/task', tasks)
+app.use('/task', tasks(node, kp))
 app.use('/run', run(node, kp))
 
 app.listen(port, () => {

@@ -37,13 +37,13 @@
     const newcalls = [...calls];
     calls = newcalls;
   };
-  const run = (calls) => {
+  const run = (calls) => { 
     const ipcCall = async (pk, name, params) => {
       const url = `https://node.lan.247420.xyz/run/${pk}/${name}`;
       const fetched = await fetch(url, {
         headers: { "Content-Type": "application/json" },
         method: "POST",
-        body: JSON.stringify(params),
+        body: JSON.stringify({body:params}),
       });
       return await fetched.json();
     };
