@@ -1,5 +1,8 @@
 <script>
   import { onMount } from 'svelte';
+  import { crypto } from 'hypercore-crypto';
+  import { b4a } from 'b4a';
+  import { runCall } from './runCall';
   let isOpen = false;
 </script>
 
@@ -9,6 +12,13 @@
   </button>
 
   <!-- Node creation, node naming, saving, loading, running, and naming of tasks elements go here -->
+  <button on:click={runCall}>RUN</button>
+  <button on:click={save}>SAVE</button>
+  <button on:click={load}>LOAD</button>
+  <button on:click={test}>TEST</button>
+  <input bind:value={taskName} placeholder="Task name" />
+  <input bind:value={newIpcCallName} placeholder="new ipc call name" />
+  <button on:click={createNode}>+</button>
 </div>
 
 <style>
