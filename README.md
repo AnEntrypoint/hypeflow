@@ -1,4 +1,4 @@
-# hypeflow
+![image](https://github.com/AnEntrypoint/hypeflow/assets/657315/a946b6e3-28c5-4068-ad4e-11d6254ecc0e)
 
 ## running hypeflow charts over p2p
 
