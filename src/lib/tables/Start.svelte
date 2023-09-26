@@ -1,24 +1,26 @@
 <script>
     import { Node, Anchor } from "svelvet";
+    import Drawer from './Drawer.svelte';
     export let name, id;
-  </script>
+</script>
   
-  <Node useDefaults id="start" let:grabHandle let:selected position={{y:250,x:200}} >
-    <div class="nodeWrapper" use:grabHandle>
-      <div class="output">
-        <Anchor
-          id="{id}_object"
-          output
-          direction="east"
-          nodeConnect
-        />
-      </div>
-      <div id="container">
-        <div id="heading" class="w-full"><span style="cursor: text;" on:keydown|stopPropagation on:click|stopPropagation on:mousedown|stopPropagation></span></div>
-        Starting point for execution
-      </div>
+<Node useDefaults id="start" let:grabHandle let:selected position={{y:250,x:200}} >
+  <div class="nodeWrapper" use:grabHandle>
+    <div class="output">
+      <Anchor
+        id="{id}_object"
+        output
+        direction="east"
+        nodeConnect
+      />
     </div>
-  </Node>
+    <div id="container">
+      <div id="heading" class="w-full"><span style="cursor: text;" on:keydown|stopPropagation on:click|stopPropagation on:mousedown|stopPropagation></span></div>
+      Starting point for execution
+    </div>
+  </div>
+  <Drawer />
+</Node>
   
   <style>
     .nodeWrapper {
