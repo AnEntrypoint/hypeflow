@@ -10,12 +10,12 @@
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^2.0.4",
+    "@sveltejs/vite-plugin-svelte": "^2.4.6",
     "@tsconfig/svelte": "^4.0.1",
-    "svelte": "^3.58.0",
-    "svelte-check": "^3.3.1",
-    "tslib": "^2.5.0",
-    "vite": "^4.3.2"
+    "svelte": "^3.59.2",
+    "svelte-check": "^3.5.2",
+    "tslib": "^2.6.2",
+    "vite": "^4.4.9"
   },
   "dependencies": {
     "@codemirror/lang-javascript": "^6.2.1",
@@ -24,9 +24,10 @@
     "b4a": "^1.6.4",
     "express": "^4.18.2",
     "graceful-goodbye": "^1.3.0",
-    "hyper-ipc-secure": "^1.4.12",
+    "hyper-ipc-secure": "^1.4.21",
     "hypercore-crypto": "^3.4.0",
-    "keypear": "^1.1.1",
+    "keypear": "^1.2.0",
+    "quickjs-emscripten": "^0.23.0",
     "svelte-codemirror-editor": "^1.1.0",
     "svelvet": "^8.1.0"
   }

@@ -3,6 +3,7 @@
   import Call from "./lib/tables/Call.svelte";
   import crypto from "hypercore-crypto";
   import b4a from "b4a";
+  import runCall from "./runCall";
   let seed = "";
   let kp = crypto.keyPair();
 
@@ -17,6 +18,7 @@
   };
   let calls = [];
   let newName;
+  let taskName;
   const add = () => {
     const newcalls = [...calls];
     newcalls.push({
@@ -35,38 +37,46 @@
     const newcalls = [...calls];
     calls = newcalls;
   };
-  const save = () => {
-    console.log(calls);
-  };
   const run = (calls) => {
-    const runCall = async (call, input = {}) => {
-      const pk = toHexString(kp.publicKey);
-      const url = `https://node.lan.247420.xyz/run/${pk}/${call.name}`;
-      const params = JSON.parse(call.params);
-      const paramsWithInput = Object.assign(params, input);
-      call.stdout = '';
-      call.stderr = '';
-      eval("const console = {log: (...val)=>{call.stdout = call.stdout + val.map(v=>JSON.stringify(v, null, 2)).join(' ')}};"+call.before);
+    const ipcCall = async (pk, name, params) => {
+      const url = `https://node.lan.247420.xyz/run/${pk}/${name}`;
       const fetched = await fetch(url, {
         headers: { "Content-Type": "application/json" },
         method: "POST",
-        body: JSON.stringify(paramsWithInput),
+        body: JSON.stringify(params),
       });
-      const out = await fetched.json();
-      eval("const console = {log: (...val)=>{call.stdout = call.stdout +\"\\n\"+ val.map(v=>JSON.stringify(v, null, 2)).join(' ')}};"+call.after);
-      call.stdout += out.stdout||'';
-      call.stderr += out.stderr||'';
-      delete out.stdout;
-      delete out.stderr;
-      call.result = JSON.stringify(out, null, 2)
-      refresh();
-      if (call.output.length) {
-        for (let output of call.output) {
-          await runCall(calls[output.split("-")[1]], out);
-        }
-      }
+      return await fetched.json();
     };
-    runCall(calls[0]);
+
+    const pk = toHexString(kp.publicKey);
+    runCall(0, calls, {}, pk, ipcCall, refresh);
+  };
+  const runOnServer = async (name) => {
+    const pk = toHexString(kp.publicKey);
+    const url = `https://node.lan.247420.xyz/task/run/${pk}/${name}`;
+    
+    const fetched = await fetch(url, {
+      headers: { "Content-Type": "application/json" },
+      method: "POST",
+      body:JSON.stringify({})
+    });
+    const output = await fetched.json();
+    console.log({output})
+    calls = output;
+  };
+  const save = async (incalls, taskName) => {
+    const url = `https://node.lan.247420.xyz/task/save/${taskName}`;
+    const fetched = await fetch(url, {
+      headers: { "Content-Type": "application/json" },
+      method: "POST",
+      body: JSON.stringify(incalls),
+    });
+    console.log(calls);
+  };
+  const load = async (taskName) => {
+    const url = `https://node.lan.247420.xyz/task/load/${taskName}`;
+    const fetched = await fetch(url, { method: "GET" });
+    calls = await fetched.json();
   };
   function handleConnection(event) {
     const outsplit = event.detail.targetNode.id.split("-");
@@ -105,19 +115,45 @@
     <ThemeToggle main="dark" alt="light" slot="toggle" />
   </Svelvet>
   <button
-    on:click|stopPropagation={save}
-    style="position:fixed; left:17em; top:1em; padding:4px; padding-bottom:6px;font-weight: bolder; "
-    class="inline-flex text-blue-100 transition-colors duration-150 bg-blue-700 rounded-full focus:shadow-outline hover:bg-blue-800"
-    >SAVE</button
-  >
-  <button
     on:click|stopPropagation={() => {
       run(calls);
     }}
     style="position:fixed; left:20em; top:1em; padding:4px; padding-bottom:6px;font-weight: bolder; "
     class="inline-flex text-green-100 transition-colors duration-150 bg-green-700 rounded-full focus:shadow-outline hover:bg-green-800"
-    >RUN</button
+    >TEST</button
   >
+  <input
+    style="position: fixed;left: 23em;color:gray;padding-left: 1em;top:1em; margin-top:4px"
+    placeholder="Task name"
+    bind:value={taskName}
+    class="rounded-full"
+  />
+  <button
+  on:click|stopPropagation={() => {
+    save(calls, taskName);
+  }}
+  style="position:fixed; left:36em; top:1em; padding:4px; padding-bottom:6px;font-weight: bolder; "
+    class="inline-flex text-blue-100 transition-colors duration-150 bg-blue-700 rounded-full focus:shadow-outline hover:bg-blue-800"
+    >SAVE</button
+  >
+  <button
+    on:click|stopPropagation={() => {
+      runOnServer(taskName);
+    }}
+    style="position:fixed; left:39em; top:1em; padding:4px; padding-bottom:6px;font-weight: bolder; "
+    class="inline-flex text-green-100 transition-colors duration-150 bg-green-700 rounded-full focus:shadow-outline hover:bg-green-800"
+  >
+    RUN
+  </button>
+  <button
+  on:click|stopPropagation={() => {
+    load(taskName);
+  }}
+  style="position:fixed; left:42em; top:1em; padding:4px; padding-bottom:6px;font-weight: bolder; "
+  class="inline-flex text-green-100 transition-colors duration-150 bg-green-700 rounded-full focus:shadow-outline hover:bg-green-800"
+>
+  LOAD
+</button>
   <div style="position: fixed;left: 1em;top: 1em;font-weight: bolder;">
     <div
       class="inline-flex items-center justify-center w-8 h-8 mr-2 text-pink-100 transition-colors duration-150 bg-pink-700 rounded-full focus:shadow-outline hover:bg-pink-800"

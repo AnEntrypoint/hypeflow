@@ -6,7 +6,6 @@
   import { json } from "@codemirror/lang-json";
   import { oneDark } from "@codemirror/theme-one-dark";
   export let params,name, before, after, id, x ,y, output, stdout, stderr, result;
-  console.log({result})
 </script>
 <Node useDefaults id={id} let:grabHandle let:selected  position={{ x, y }} >
   <div class="nodeWrapper" use:grabHandle>
