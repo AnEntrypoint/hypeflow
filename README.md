@@ -16,8 +16,11 @@ Hypeflow is a visual programming platform that leverages the power of peer-to-pe
 Hypeflow can be used for a variety of applications, from building web applications to creating complex data visualizations. Here's a basic example of how to use Hypeflow:
 
 ```javascript
-// example code here
-```
+// Create a new instance of Hypeflow
+const hypeflow = new Hypeflow();
+
+// Call a method on the instance
+hypeflow.someMethod();
 
 ## Contribution
 
@@ -33,4 +36,5 @@ Please ensure that your code adheres to our coding standards and includes approp
 
 ## License and Contact Information
 
-Hypeflow is licensed under the MIT License. For any queries or issues, please contact the project maintainers at [email contact].
+Hypeflow is licensed under the MIT License. For any queries or issues, please contact the project maintainers at hypeflow@example.com.
+```
