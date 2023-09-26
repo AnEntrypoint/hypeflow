@@ -1,4 +1,4 @@
-![image](https://github.com/AnEntrypoint/hypeflow/assets/657315/e3d5e45e-b746-4c87-b87e-2da50ceed1d2)
+![image]([https://github.com/AnEntrypoint/hypeflow/assets/657315/e3d5e45e-b746-4c87-b87e-2da50ceed1d2](https://media.discordapp.net/attachments/999723129687515246/1156379303936794705/Untitled-1.png?ex=6514c1a6&is=65137026&hm=353f6f8f364d16b841e277369c0a9ed6b22a2978a47bc4fd8829058384c2fafc&=&width=470&height=102))
 
 
 ## running hypeflow charts over p2p
