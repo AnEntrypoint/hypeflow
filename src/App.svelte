@@ -1,6 +1,7 @@
 <script>
   import { Svelvet, ThemeToggle } from "svelvet";
   import Call from "./lib/tables/Call.svelte";
+  import Drawer from "./lib/Drawer.svelte";
   import crypto from "hypercore-crypto";
   import b4a from "b4a";
   import runCall from "./runCall";
@@ -114,71 +115,66 @@
 
     <ThemeToggle main="dark" alt="light" slot="toggle" />
   </Svelvet>
-  <button
-    on:click|stopPropagation={() => {
-      run(calls);
-    }}
-    style="position:fixed; left:20em; top:1em; padding:4px; padding-bottom:6px;font-weight: bolder; "
-    class="inline-flex text-green-100 transition-colors duration-150 bg-green-700 rounded-full focus:shadow-outline hover:bg-green-800"
-    >TEST</button
-  >
-  <input
-    style="position: fixed;left: 23em;color:gray;padding-left: 1em;top:1em; margin-top:4px"
-    placeholder="Task name"
-    bind:value={taskName}
-    class="rounded-full"
-  />
-  <button
-  on:click|stopPropagation={() => {
-    save(calls, taskName);
-  }}
-  style="position:fixed; left:36em; top:1em; padding:4px; padding-bottom:6px;font-weight: bolder; "
-    class="inline-flex text-blue-100 transition-colors duration-150 bg-blue-700 rounded-full focus:shadow-outline hover:bg-blue-800"
-    >SAVE</button
-  >
-  <button
-    on:click|stopPropagation={() => {
-      runOnServer(taskName);
-    }}
-    style="position:fixed; left:39em; top:1em; padding:4px; padding-bottom:6px;font-weight: bolder; "
-    class="inline-flex text-green-100 transition-colors duration-150 bg-green-700 rounded-full focus:shadow-outline hover:bg-green-800"
-  >
-    RUN
-  </button>
-  <button
-  on:click|stopPropagation={() => {
-    load(taskName);
-  }}
-  style="position:fixed; left:42em; top:1em; padding:4px; padding-bottom:6px;font-weight: bolder; "
-  class="inline-flex text-green-100 transition-colors duration-150 bg-green-700 rounded-full focus:shadow-outline hover:bg-green-800"
->
-  LOAD
-</button>
-  <div style="position: fixed;left: 1em;top: 1em;font-weight: bolder;">
-    <div
-      class="inline-flex items-center justify-center w-8 h-8 mr-2 text-pink-100 transition-colors duration-150 bg-pink-700 rounded-full focus:shadow-outline hover:bg-pink-800"
+  <Drawer>
+    <button
+      on:click|stopPropagation={() => {
+        run(calls);
+      }}
+      class="inline-flex text-green-100 transition-colors duration-150 bg-green-700 rounded-full focus:shadow-outline hover:bg-green-800"
+      >TEST</button
     >
-      <button
-        on:click|stopPropagation={add}
-        style="padding-bottom: 8px;font-size: 2em;">+</button
+    <input
+      placeholder="Task name"
+      bind:value={taskName}
+      class="rounded-full"
+    />
+    <button
+    on:click|stopPropagation={() => {
+      save(calls, taskName);
+    }}
+      class="inline-flex text-blue-100 transition-colors duration-150 bg-blue-700 rounded-full focus:shadow-outline hover:bg-blue-800"
+      >SAVE</button
+    >
+    <button
+      on:click|stopPropagation={() => {
+        runOnServer(taskName);
+      }}
+      class="inline-flex text-green-100 transition-colors duration-150 bg-green-700 rounded-full focus:shadow-outline hover:bg-green-800"
+    >
+      RUN
+    </button>
+    <button
+    on:click|stopPropagation={() => {
+      load(taskName);
+    }}
+    class="inline-flex text-green-100 transition-colors duration-150 bg-green-700 rounded-full focus:shadow-outline hover:bg-green-800"
+  >
+    LOAD
+  </button>
+    <div>
+      <div
+        class="inline-flex items-center justify-center w-8 h-8 mr-2 text-pink-100 transition-colors duration-150 bg-pink-700 rounded-full focus:shadow-outline hover:bg-pink-800"
       >
-      <input
-        style="position: absolute;left: 23px;color:gray;padding-left: 1em;z-index: -1;"
-        placeholder="new ipc call name"
-        bind:value={newName}
-        class="rounded-full"
-      />
+        <button
+          on:click|stopPropagation={add}
+          style="padding-bottom: 8px;font-size: 2em;">+</button
+        >
+        <input
+          placeholder="new ipc call name"
+          bind:value={newName}
+          class="rounded-full"
+        />
+      </div>
+      <div>
+        <input
+          placeholder="seed"
+          bind:value={seed}
+          on:change={newSeed}
+          class="rounded-full"
+        />
+      </div>
     </div>
-    <div style="position: fixed;right: 1em;top: 1em;font-weight: bolder;">
-      <input
-        style="position: absolute;right: 23px;color:gray;padding-left: 1em;z-index: -1;"
-        placeholder="seed"
-        bind:value={seed}
-        on:change={newSeed}
-        class="rounded-full"
-      />
-    </div>
-  </div>
+  </Drawer>
 </body>
 
 <style>
