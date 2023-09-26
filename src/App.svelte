@@ -115,66 +115,27 @@
 
     <ThemeToggle main="dark" alt="light" slot="toggle" />
   </Svelvet>
-  <Drawer>
-    <button
-      on:click|stopPropagation={() => {
-        run(calls);
-      }}
-      class="inline-flex text-green-100 transition-colors duration-150 bg-green-700 rounded-full focus:shadow-outline hover:bg-green-800"
-      >TEST</button
-    >
-    <input
-      placeholder="Task name"
-      bind:value={taskName}
-      class="rounded-full"
-    />
-    <button
-    on:click|stopPropagation={() => {
-      save(calls, taskName);
-    }}
-      class="inline-flex text-blue-100 transition-colors duration-150 bg-blue-700 rounded-full focus:shadow-outline hover:bg-blue-800"
-      >SAVE</button
-    >
-    <button
-      on:click|stopPropagation={() => {
-        runOnServer(taskName);
-      }}
-      class="inline-flex text-green-100 transition-colors duration-150 bg-green-700 rounded-full focus:shadow-outline hover:bg-green-800"
-    >
-      RUN
-    </button>
-    <button
-    on:click|stopPropagation={() => {
-      load(taskName);
-    }}
-    class="inline-flex text-green-100 transition-colors duration-150 bg-green-700 rounded-full focus:shadow-outline hover:bg-green-800"
-  >
-    LOAD
-  </button>
-    <div>
-      <div
-        class="inline-flex items-center justify-center w-8 h-8 mr-2 text-pink-100 transition-colors duration-150 bg-pink-700 rounded-full focus:shadow-outline hover:bg-pink-800"
-      >
-        <button
-          on:click|stopPropagation={add}
-          style="padding-bottom: 8px;font-size: 2em;">+</button
-        >
-        <input
-          placeholder="new ipc call name"
-          bind:value={newName}
-          class="rounded-full"
+  <body>
+    <Svelvet minimap controls on:connection={handleConnection}>
+      {#each calls as { name, params, before, after, output, stdout, stderr, result }, index}
+        <Call
+          id={"call-" + index}
+          bind:name
+          bind:params
+          bind:before
+          bind:after
+          bind:output
+          bind:stdout
+          bind:stderr
+          bind:result
+          x={500 + index * 500}
+          y={250}
         />
-      </div>
-      <div>
-        <input
-          placeholder="seed"
-          bind:value={seed}
-          on:change={newSeed}
-          class="rounded-full"
-        />
-      </div>
-    </div>
-  </Drawer>
+      {/each}
+
+      <ThemeToggle main="dark" alt="light" slot="toggle" />
+    </Svelvet>
+  </body>
 </body>
 
 <style>
