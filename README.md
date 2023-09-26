@@ -13,14 +13,30 @@ Hypeflow is a visual programming platform that leverages the power of peer-to-pe
 
 ## Usage
 
-Hypeflow can be used for a variety of applications, from building web applications to creating complex data visualizations. Here's a basic example of how to use Hypeflow:
+Hypeflow can be used for a variety of applications, from building web applications to creating complex data visualizations, all the parts of your programs become remoe functions so while they may all be installed locally, they can be removed and put on another computer without any configuration changes, and without restarting any other parts, any process can also be installed at multiple sites to load balance it (load balancing is mid-implementation, the resource telemetry is not in yet)
 
-```javascript
-// Create a new instance of Hypeflow
-const hypeflow = new Hypeflow();
+Here's a basic example of how to use Hypeflow:
 
-// Call a method on the instance
-hypeflow.someMethod();
+```
+#api
+node server.js
+#gui
+node app.js 
+```
+The GUI of the application should allow you to construct complex tasks using a network oc RPC instructions, that network of nodes represents local or remotely installed remote methods that are called until the entire network of instructions are run, those instructions are called 'tasks'.
+
+You can modify the input (paramms) of any call before it happens using before, and the output of any call (out) before it finishes using after
+
+# Technical details:
+
+When you make a new task, you select it's name and that name becomes a derivitive of your root key (which we call the task key), the private part of that derivitive allows servers to be started, the public part of it allows those servers to be called.
+root key + task name = task key
+
+Servers also have an additional key for every task, one that's derived from their own server key, which in turn is derived from the root.
+root key + server key + task name = server task key
+
+load balanced servers announce on a DHT network a proof that they own the task key
+when calling, that task key is looked up to discover the server key, and in turn call it
 
 ## Contribution
 
