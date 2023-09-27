@@ -39,6 +39,9 @@ root key + server key + task name = server task key
 load balanced servers announce on a DHT network a proof that they own the task key
 when calling, that task key is looked up to discover the server key, and in turn call it
 
+This image should give you a rough impression of how cool hype:flow actually is:
+![image](https://media.discordapp.net/attachments/999723129687515246/1156380939883126895/OIG.png?ex=6514c32c&is=651371ac&hm=e8548d428795add5e52a43c04d30ded188d6661e2a477d46eea0b0c5e5f366b5&=&width=640&height=640)
+
 ## Contribution
 
 We welcome contributions from developers of all skill levels. To contribute to Hypeflow:
