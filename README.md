@@ -1,8 +1,9 @@
-# hypeflow
+![image](https://media.discordapp.net/attachments/999723129687515246/1156380077454540910/Untitled-1.png?ex=6514c25e&is=651370de&hm=5acd7a54f9dc65454e1f39af5f01431577a9d4c3a0b63ec50f73dd541a80652f&=&width=470&height=102)
 
-## running hypeflow charts over p2p
 
-Hypeflow is a visual programming platform that leverages the power of peer-to-peer (P2P) technology to enable real-time, collaborative coding. This project aims to revolutionize the way developers work together, breaking geographical boundaries and making teamwork seamless and efficient. With Hypeflow, you can work on your projects with friends or colleagues in real-time, no matter where they are in the world. It's like a digital jam session for coding, allowing you to build amazing things together seamlessly.
+## running flow charts over p2p
+
+hype:flow is a visual p2p orchestration platform that leverages the power of peer-to-peer (P2P) technology to enable. This project aims to revolutionize the way apps work. you can load balance any part of your working parts or move them around without breaking anything
 
 ## Setup and Installation
 
@@ -37,6 +38,9 @@ root key + server key + task name = server task key
 
 load balanced servers announce on a DHT network a proof that they own the task key
 when calling, that task key is looked up to discover the server key, and in turn call it
+
+This image should give you a rough impression of how cool hype:flow actually is:
+![image](https://media.discordapp.net/attachments/999723129687515246/1156383160712560640/Untitled-4.png?ex=6514c53e&is=651373be&hm=42e9aa355833f170d488aaacff6a9a5b053a39bff485b051b699b3bd50702529&=&width=625&height=625)
 
 ## Contribution
 
