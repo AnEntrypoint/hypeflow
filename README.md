@@ -40,7 +40,7 @@ load balanced servers announce on a DHT network a proof that they own the task k
 when calling, that task key is looked up to discover the server key, and in turn call it
 
 This image should give you a rough impression of how cool hype:flow actually is:
-![image](https://media.discordapp.net/attachments/999723129687515246/1156382374532223086/image-removebg-preview.png?ex=6514c482&is=65137302&hm=dc34552f4bbb0a91e2ef9f050a108c091a7da2e363729d6442507fc9a53f6bc1&=&width=625&height=625)
+![image](https://media.discordapp.net/attachments/999723129687515246/1156383160712560640/Untitled-4.png?ex=6514c53e&is=651373be&hm=42e9aa355833f170d488aaacff6a9a5b053a39bff485b051b699b3bd50702529&=&width=625&height=625)
 
 ## Contribution
 
