@@ -6,14 +6,16 @@
   import runCall from "./runCall";
   let seed = "";
   let kp = crypto.keyPair();
-
   const toHexString = (bytes) => {
     return Array.from(bytes, (byte) => {
       return ("0" + (byte & 0xff).toString(16)).slice(-2);
     }).join("");
   };
+  let pk = toHexString(kp.publicKey);
+  console.log({ pk });
   const newSeed = (event) => {
     kp = crypto.keyPair(crypto.data(b4a.from(event.target.value, "utf-8")));
+    pk = toHexString(kp.publicKey);
     console.log("new base pk", toHexString(kp.publicKey));
   };
   let calls = [];
@@ -23,7 +25,6 @@
     const newcalls = [...calls];
     newcalls.push({
       name: newName,
-      params: "{}",
       before: "",
       after: "",
       result: "{}",
@@ -37,33 +38,39 @@
     const newcalls = [...calls];
     calls = newcalls;
   };
-  const run = (calls) => { 
+  function remove(index) {
+    if (index >= 0 && index < calls.length) {
+      calls= [...calls.slice(0, index), ...calls.slice(index + 1)];
+    }
+  }
+
+  const run = (calls) => {
     const ipcCall = async (pk, name, params) => {
       const url = `https://node.lan.247420.xyz/run/${pk}/${name}`;
       const fetched = await fetch(url, {
         headers: { "Content-Type": "application/json" },
         method: "POST",
-        body: JSON.stringify({body:params}),
+        body: JSON.stringify({ body: params }),
       });
       return await fetched.json();
     };
 
-    const pk = toHexString(kp.publicKey);
     runCall(0, calls, {}, pk, ipcCall, refresh);
   };
   const runOnServer = async (name) => {
     const pk = toHexString(kp.publicKey);
     const url = `https://node.lan.247420.xyz/task/run/${pk}/${name}`;
-    
+
     const fetched = await fetch(url, {
       headers: { "Content-Type": "application/json" },
       method: "POST",
-      body:JSON.stringify({})
+      body: JSON.stringify({}),
     });
     const output = await fetched.json();
-    console.log({output})
+    console.log({ output });
     calls = output;
   };
+
   const save = async (incalls, taskName) => {
     const url = `https://node.lan.247420.xyz/task/save/${taskName}`;
     const fetched = await fetch(url, {
@@ -96,17 +103,18 @@
 
 <body>
   <Svelvet minimap controls on:connection={handleConnection}>
-    {#each calls as { name, params, before, after, output, stdout, stderr, result }, index}
+    {#each calls as { name, before, after, output, stdout, stderr, result }, index}
       <Call
         id={"call-" + index}
         bind:name
-        bind:params
         bind:before
         bind:after
-        bind:output
-        bind:stdout
-        bind:stderr
-        bind:result
+        {output}
+        {stdout}
+        {stderr}
+        {result}
+        {remove}
+        {pk}
         x={500 + index * 500}
         y={250}
       />
@@ -129,10 +137,10 @@
     class="rounded-full"
   />
   <button
-  on:click|stopPropagation={() => {
-    save(calls, taskName);
-  }}
-  style="position:fixed; left:36em; top:1em; padding:4px; padding-bottom:6px;font-weight: bolder; "
+    on:click|stopPropagation={() => {
+      save(calls, taskName);
+    }}
+    style="position:fixed; left:36em; top:1em; padding:4px; padding-bottom:6px;font-weight: bolder; "
     class="inline-flex text-blue-100 transition-colors duration-150 bg-blue-700 rounded-full focus:shadow-outline hover:bg-blue-800"
     >SAVE</button
   >
@@ -146,14 +154,14 @@
     RUN
   </button>
   <button
-  on:click|stopPropagation={() => {
-    load(taskName);
-  }}
-  style="position:fixed; left:42em; top:1em; padding:4px; padding-bottom:6px;font-weight: bolder; "
-  class="inline-flex text-green-100 transition-colors duration-150 bg-green-700 rounded-full focus:shadow-outline hover:bg-green-800"
->
-  LOAD
-</button>
+    on:click|stopPropagation={() => {
+      load(taskName);
+    }}
+    style="position:fixed; left:42em; top:1em; padding:4px; padding-bottom:6px;font-weight: bolder; "
+    class="inline-flex text-green-100 transition-colors duration-150 bg-green-700 rounded-full focus:shadow-outline hover:bg-green-800"
+  >
+    LOAD
+  </button>
   <div style="position: fixed;left: 1em;top: 1em;font-weight: bolder;">
     <div
       class="inline-flex items-center justify-center w-8 h-8 mr-2 text-pink-100 transition-colors duration-150 bg-pink-700 rounded-full focus:shadow-outline hover:bg-pink-800"

@@ -2,8 +2,6 @@ import ev from './eval.js'
 const runCall = async (index, calls, input = {}, pk, ipcCall, refresh) => {
   console.log('run call')
     const call = calls[index];
-    const params = (await ev(`${call.after}`));
-    const paramsWithInput = Object.assign(params, input);
     call.stdout = '';
     call.stderr = '';
     console.log('calling before')

@@ -1,7 +1,8 @@
 <script>
     import { Node, Anchor } from "svelvet";
     export let name, id;
-  </script>
+
+</script>
   
   <Node useDefaults id="start" let:grabHandle let:selected position={{y:250,x:200}} >
     <div class="nodeWrapper" use:grabHandle>

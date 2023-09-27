@@ -3,7 +3,7 @@ const tasks = async inp => {
     console.log("RUNNING TASK", inp)
     let pk = inp.pk;
     let task;
-    const file = fs.readFileSync("tasks/"+inp.name);
+    const file = inp.calls;
     console.log(file)
     task = JSON.parse(file);
     console.log({task});
@@ -11,4 +11,6 @@ const tasks = async inp => {
     console.log({output});
     return output;
 }
+
 export default tasks;
+
