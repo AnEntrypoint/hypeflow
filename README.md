@@ -1,7 +1,7 @@
 ![image](https://media.discordapp.net/attachments/999723129687515246/1156380077454540910/Untitled-1.png?ex=6514c25e&is=651370de&hm=5acd7a54f9dc65454e1f39af5f01431577a9d4c3a0b63ec50f73dd541a80652f&=&width=470&height=102)
 
 
-## running hypeflow charts over p2p
+## running flow charts over p2p
 
 Hypeflow is a visual programming platform that leverages the power of peer-to-peer (P2P) technology to enable real-time, collaborative coding. This project aims to revolutionize the way developers work together, breaking geographical boundaries and making teamwork seamless and efficient. With Hypeflow, you can work on your projects with friends or colleagues in real-time, no matter where they are in the world. It's like a digital jam session for coding, allowing you to build amazing things together seamlessly.
 
