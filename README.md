@@ -3,7 +3,7 @@
 
 ## running flow charts over p2p
 
-hype:flow is a visual programming platform that leverages the power of peer-to-peer (P2P) technology to enable real-time, collaborative coding. This project aims to revolutionize the way developers work together, breaking geographical boundaries and making teamwork seamless and efficient. With Hypeflow, you can work on your projects with friends or colleagues in real-time, no matter where they are in the world. It's like a digital jam session for coding, allowing you to build amazing things together seamlessly.
+hype:flow is a visual p2p orchestration platform that leverages the power of peer-to-peer (P2P) technology to enable. This project aims to revolutionize the way apps work. you can load balance any part of your working parts or move them around without breaking anything
 
 ## Setup and Installation
 
