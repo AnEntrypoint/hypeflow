@@ -6,12 +6,19 @@
   import { oneDark } from "@codemirror/theme-one-dark";
 
   export let name, before, after, id, x, y, output, stdout, stderr, result, pk, remove;
-  const url = `https://node.lan.247420.xyz/run/find/${pk}/${name}`;
   let isAvailable = 0;
-  (async () => {
-    const found = await (await fetch(url)).json();
-    isAvailable = found ? found.length : 0;
-  })();
+  let timer;
+
+  const checkAvailable = v => {
+    isAvailable = -1;
+    clearTimeout(timer);
+    timer = setTimeout(async () => {
+      const url = `https://node.lan.247420.xyz/run/find/${pk}/${name}`;
+      const found = await (await fetch(url)).json();
+      isAvailable = found ? found.length : 0;
+    }, 750);
+  }
+  checkAvailable()
 </script>
 
 <Node useDefaults {id} let:grabHandle let:selected position={{ x, y }}>
@@ -32,7 +39,7 @@
       <div
         id="heading"
         class="w-full"
-        style="background-color:{isAvailable ? 'green' : 'red'}"
+        style="background-color:{isAvailable == -1? 'yellow':isAvailable ? 'green' : 'red'}"
       >
         <div>
           <span
@@ -42,8 +49,9 @@
             bind:innerHTML={name}
             on:keydown|stopPropagation
             on:click|stopPropagation
+            on:input={checkAvailable}
             on:mousedown|stopPropagation
-          /><span class="absolute right-8">({isAvailable||0})</span><span
+          /><span class="absolute right-8">({isAvailable!=-1?'('+isAvailable||0+')':"🕐")</span><span
             class="absolute right-2"
             ><button on:click="{()=>{remove(id.split('-')[1])}}"><svg
               height="22px"

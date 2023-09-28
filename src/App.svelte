@@ -12,12 +12,6 @@
     }).join("");
   };
   let pk = toHexString(kp.publicKey);
-  console.log({ pk });
-  const newSeed = (event) => {
-    kp = crypto.keyPair(crypto.data(b4a.from(event.target.value, "utf-8")));
-    pk = toHexString(kp.publicKey);
-    console.log("new base pk", toHexString(kp.publicKey));
-  };
   let calls = [];
   let newName;
   let taskName;
@@ -43,6 +37,12 @@
       calls= [...calls.slice(0, index), ...calls.slice(index + 1)];
     }
   }
+  const newSeed = (event) => {
+    kp = crypto.keyPair(crypto.data(b4a.from(event.target.value, "utf-8")));
+    pk = toHexString(kp.publicKey);
+    refresh();
+  };
+  
 
   const run = (calls) => {
     const ipcCall = async (pk, name, params) => {
@@ -50,7 +50,7 @@
       const fetched = await fetch(url, {
         headers: { "Content-Type": "application/json" },
         method: "POST",
-        body: JSON.stringify({ body: params }),
+        body: JSON.stringify(params),
       });
       return await fetched.json();
     };
@@ -95,9 +95,9 @@
     if (
       innode &&
       outnode &&
-      !innode.output.includes(outsplit[1] + "-" + outsplit[2])
+      !innode.output.includes(outsplit[2])
     )
-      innode.output.push(outsplit[1] + "-" + outsplit[2]);
+      innode.output.push(parseInt(outsplit[2]));
   }
 </script>
 

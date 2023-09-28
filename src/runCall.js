@@ -5,8 +5,8 @@ const runCall = async (index, calls, input = {}, pk, ipcCall, refresh) => {
     call.stdout = '';
     call.stderr = '';
     console.log('calling before')
-    const before = (await ev(`const console = {log:(...params)=>{api('log', JSON.stringify(params))}}; let params = ${JSON.stringify(paramsWithInput)};${call.before};params`));
-    console.log(before);
+    const before = (await ev(`const console = {log:(...params)=>{api('log', JSON.stringify(params))}}; let params = ${JSON.stringify(input)};${call.before};params`));
+    console.log({before});
     call.stdout += before.stdout||'';
     const out = await ipcCall(pk, call.name, before.value);
     call.stdout += out.stdout||'';
@@ -20,7 +20,7 @@ const runCall = async (index, calls, input = {}, pk, ipcCall, refresh) => {
     refresh(calls);
     if (call.output.length) {
       for (let output of call.output) {
-        await runCall(output.split("-")[1], calls, out, pk, ipcCall, refresh);
+        await runCall(output, calls, out, pk, ipcCall, refresh);
       }
     }
     return calls

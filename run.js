@@ -4,17 +4,16 @@ const router = express.Router()
 const init = (node)=>{
     const run = async (req, res) => {
         console.log('run called');
-        var params = req.params;
-        let body = req.body, pk = req.params.pk;
+        let body = req.body;
         const args = { ...req.params };
     
-        console.log({body})
         delete args.actionname;
         delete args.pk
         try {
             const kp = {publicKey:Buffer.from(req.params.pk, 'hex')};
             const sub = node.getSub(kp, req.params.actionname)
             const lbkey = await node.lbfind(sub);
+            console.log({body, args})
             const output = await node.runKey(Buffer.from(lbkey[0], 'hex'),  body || args);
     
             console.log("output:", output)
