@@ -28,8 +28,9 @@
     });
     calls = newcalls;
   };
-  const refresh = () => {
-    const newcalls = [...calls];
+  const refresh = (incalls) => {
+    const newcalls = [...incalls];
+    console.log({calls})
     calls = newcalls;
   };
   function remove(index) {
@@ -40,7 +41,7 @@
   const newSeed = (event) => {
     kp = crypto.keyPair(crypto.data(b4a.from(event.target.value, "utf-8")));
     pk = toHexString(kp.publicKey);
-    refresh();
+    refresh(calls);
   };
   
 
@@ -55,7 +56,7 @@
       return await fetched.json();
     };
 
-    runCall(0, calls, {}, pk, ipcCall, refresh);
+    runCall(0, calls, {}, pk, ipcCall, ()=>refresh(calls));
   };
   const runOnServer = async (name) => {
     const pk = toHexString(kp.publicKey);
@@ -81,17 +82,21 @@
     console.log(calls);
   };
   const load = async (taskName) => {
-    const url = `https://node.lan.247420.xyz/task/load/${taskName}`;
-    const fetched = await fetch(url, { method: "GET" });
-    calls = await fetched.json();
+    const url = `https://node.lan.247420.xyz/task/load/${taskName}`
+    const fetched = await fetch(url, { method: "GET" })
+    refresh(await fetched.json())
+    
   };
   function handleConnection(event) {
     const outsplit = event.detail.targetNode.id.split("-");
-    const outname = outsplit[2];
+    console.log({outsplit})
+    const outname = parseInt(outsplit[2]);
     const insplit = event.detail.sourceNode.id.split("-");
-    const inname = insplit[2];
+    console.log({insplit})
+    const inname = parseInt(insplit[2]);
     const innode = calls[inname];
     const outnode = calls[outname];
+    console.log(outname, inname);
     if (
       innode &&
       outnode &&
@@ -105,11 +110,11 @@
   <Svelvet minimap controls on:connection={handleConnection}>
     {#each calls as { name, before, after, output, stdout, stderr, result }, index}
       <Call
-        id={"call-" + index}
+        id={"call-"+index}
         bind:name
         bind:before
         bind:after
-        {output}
+        output={output.map(a=>"call-"+a)}
         {stdout}
         {stderr}
         {result}

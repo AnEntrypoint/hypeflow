@@ -22,7 +22,7 @@
 </script>
 
 <Node useDefaults {id} let:grabHandle let:selected position={{ x, y }}>
-  <div class="nodeWrapper" use:grabHandle>
+  <div class="nodeWrapper" use:grabHandle  style="max-width:80em">
     <div class="input">
       <Anchor id="{id}_input" input direction="west" nodeConnect />
     </div>
@@ -35,11 +35,11 @@
         nodeConnect
       />
     </div>
-    <div id="container">
+    <div id="container"   style="max-width:80em">
       <div
         id="heading"
         class="w-full"
-        style="background-color:{isAvailable == -1? 'yellow':isAvailable ? 'green' : 'red'}"
+        style="background-color:{isAvailable == -1? 'orange':isAvailable ? 'green' : 'red'}"
       >
         <div>
           <span
@@ -51,9 +51,8 @@
             on:click|stopPropagation
             on:input={checkAvailable}
             on:mousedown|stopPropagation
-          /><span class="absolute right-8">({isAvailable!=-1?'('+isAvailable||0+')':"🕐")</span><span
-            class="absolute right-2"
-            ><button on:click="{()=>{remove(id.split('-')[1])}}"><svg
+          /><span class="absolute right-8">{isAvailable!=-1?(isAvailable||0):"🕐"}</span><span
+            class="absolute right-2"><button on:click="{()=>{remove(id.split('-')[1])}}"><svg
               height="22px"
               version="1.1"
               style="margin-top:-2px"
@@ -150,7 +149,7 @@
           on:keydown|stopPropagation
           on:click|stopPropagation
           on:mousedown|stopPropagation
-          style="outline-style: solid;margin:4px; margin-top: 8px;outline-color: darkred;outline-width: 2px;cursor: text;"
+          style="outline-style: solid;margin:4px; margin-top: 8px;outline-color: darkred;outline-width: 2px;cursor: text; max-width=500px"
         >
           Result:
           <CodeMirror value={result} lang={json()} readonly theme={oneDark} />

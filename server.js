@@ -8,6 +8,16 @@ console.log('test')
 const kp = crypto.keyPair(crypto.data(b4a.from('seedy')));
 const node = nodes(kp)
 
+function createFolderIfNotExists(folderPath) {
+    if (!fs.existsSync(folderPath)) {
+        // If the folder doesn't exist, create it
+        fs.mkdirSync(folderPath);
+        console.log(`Folder "${folderPath}" created.`);
+    } else {
+        console.log(`Folder "${folderPath}" already exists.`);
+    }
+}
+createFolderIfNotExists('saves');
 const app = express()
 const port = process.env.PORT || 3011
 app.use(express.json())
