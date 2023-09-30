@@ -1,4 +1,4 @@
-import runCall from '../src/runCall.js'
+import runCall from '../../hypenode/lib/runCall.js'
 const tasks = async inp => {
     console.log("RUNNING TASK", inp)
     let pk = inp.pk;

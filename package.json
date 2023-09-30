@@ -24,7 +24,7 @@
     "b4a": "^1.6.4",
     "express": "^4.18.2",
     "graceful-goodbye": "^1.3.0",
-    "hyper-ipc-secure": "^1.4.23",
+    "hypenode": "^0.0.9",
     "hypercore-crypto": "^3.4.0",
     "keypear": "^1.2.0",
     "quickjs-emscripten": "^0.23.0",

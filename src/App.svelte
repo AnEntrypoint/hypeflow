@@ -1,20 +1,20 @@
 <script>
-  import { Svelvet, ThemeToggle } from "svelvet";
-  import Call from "./lib/tables/Call.svelte";
-  import crypto from "hypercore-crypto";
-  import b4a from "b4a";
-  import runCall from "./runCall";
-  let seed = "";
-  let kp = crypto.keyPair();
+  import { Svelvet, ThemeToggle } from "svelvet"
+  import Call from "./Call.svelte"
+  import crypto from "hypercore-crypto"
+  import b4a from "b4a"
+  import {runCall} from "hypenode"
+  let seed = ""
+  let kp = crypto.keyPair()
   const toHexString = (bytes) => {
     return Array.from(bytes, (byte) => {
-      return ("0" + (byte & 0xff).toString(16)).slice(-2);
-    }).join("");
+      return ("0" + (byte & 0xff).toString(16)).slice(-2)
+    }).join("")
   };
-  let pk = toHexString(kp.publicKey);
-  let calls = [];
-  let newName;
-  let taskName;
+  let pk = toHexString(kp.publicKey)
+  let calls = []
+  let newName
+  let taskName
   const add = () => {
     const newcalls = [...calls];
     newcalls.push({
@@ -26,60 +26,60 @@
       stdout: null,
       stderr: null,
     });
-    calls = newcalls;
+    calls = newcalls
   };
   const refresh = (incalls) => {
-    const newcalls = [...incalls];
+    const newcalls = [...incalls]
     console.log({calls})
-    calls = newcalls;
+    calls = newcalls
   };
   function remove(index) {
     if (index >= 0 && index < calls.length) {
-      calls= [...calls.slice(0, index), ...calls.slice(index + 1)];
+      calls= [...calls.slice(0, index), ...calls.slice(index + 1)]
     }
   }
   const newSeed = (event) => {
-    kp = crypto.keyPair(crypto.data(b4a.from(event.target.value, "utf-8")));
-    pk = toHexString(kp.publicKey);
-    refresh(calls);
+    kp = crypto.keyPair(crypto.data(b4a.from(event.target.value, "utf-8")))
+    pk = toHexString(kp.publicKey)
+    refresh(calls)
   };
   
 
   const run = (calls) => {
     const ipcCall = async (pk, name, params) => {
-      const url = `https://node.lan.247420.xyz/run/${pk}/${name}`;
+      const url = `https://node.lan.247420.xyz/run/${pk}/${name}`
       const fetched = await fetch(url, {
         headers: { "Content-Type": "application/json" },
         method: "POST",
         body: JSON.stringify(params),
       });
-      return await fetched.json();
+      return await fetched.json()
     };
 
-    runCall(0, calls, {}, pk, ipcCall, ()=>refresh(calls));
+    runCall(0, calls, {}, pk, ipcCall, ()=>refresh(calls))
   };
   const runOnServer = async (name) => {
     const pk = toHexString(kp.publicKey);
-    const url = `https://node.lan.247420.xyz/task/run/${pk}/${name}`;
+    const url = `https://node.lan.247420.xyz/task/run/${pk}/${name}`
 
     const fetched = await fetch(url, {
       headers: { "Content-Type": "application/json" },
       method: "POST",
       body: JSON.stringify({}),
     });
-    const output = await fetched.json();
-    console.log({ output });
-    calls = output;
+    const output = await fetched.json()
+    console.log({ output })
+    calls = output
   };
 
   const save = async (incalls, taskName) => {
-    const url = `https://node.lan.247420.xyz/task/save/${taskName}`;
+    const url = `https://node.lan.247420.xyz/task/save/${taskName}`
     const fetched = await fetch(url, {
       headers: { "Content-Type": "application/json" },
       method: "POST",
       body: JSON.stringify(incalls),
-    });
-    console.log(calls);
+    })
+    console.log(calls)
   };
   const load = async (taskName) => {
     const url = `https://node.lan.247420.xyz/task/load/${taskName}`
@@ -88,21 +88,21 @@
     
   };
   function handleConnection(event) {
-    const outsplit = event.detail.targetNode.id.split("-");
+    const outsplit = event.detail.targetNode.id.split("-")
     console.log({outsplit})
     const outname = parseInt(outsplit[2]);
-    const insplit = event.detail.sourceNode.id.split("-");
+    const insplit = event.detail.sourceNode.id.split("-")
     console.log({insplit})
     const inname = parseInt(insplit[2]);
-    const innode = calls[inname];
-    const outnode = calls[outname];
-    console.log(outname, inname);
+    const innode = calls[inname]
+    const outnode = calls[outname]
+    console.log(outname, inname)
     if (
       innode &&
       outnode &&
       !innode.output.includes(outsplit[2])
     )
-      innode.output.push(parseInt(outsplit[2]));
+      innode.output.push(parseInt(outsplit[2]))
   }
 </script>
 
