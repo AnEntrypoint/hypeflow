@@ -3,7 +3,7 @@
   import Call from "./Call.svelte"
   import crypto from "hypercore-crypto"
   import b4a from "b4a"
-  import {runCall} from "hypenode"
+  import {runCall} from "hypeeval"
   let seed = ""
   let kp = crypto.keyPair()
   const toHexString = (bytes) => {
@@ -14,6 +14,7 @@
   let pk = toHexString(kp.publicKey)
   let calls = []
   let newName
+  let host="node.lan.247420.xyz"
   let taskName
   const add = () => {
     const newcalls = [...calls];
@@ -30,7 +31,6 @@
   };
   const refresh = (incalls) => {
     const newcalls = [...incalls]
-    console.log({calls})
     calls = newcalls
   };
   function remove(index) {
@@ -38,16 +38,24 @@
       calls= [...calls.slice(0, index), ...calls.slice(index + 1)]
     }
   }
-  const newSeed = (event) => {
+  const newSeed = async (event) => {
+    console.log('new seed')
     kp = crypto.keyPair(crypto.data(b4a.from(event.target.value, "utf-8")))
     pk = toHexString(kp.publicKey)
-    refresh(calls)
+    const newCalls = calls;
+    calls = [];
+    setTimeout(()=>refresh(newCalls), 0)
+    
+  };
+  const newHost = (event) => {
+    host = event.target.value;
+    console.log(host);
   };
   
 
   const run = (calls) => {
     const ipcCall = async (pk, name, params) => {
-      const url = `https://node.lan.247420.xyz/run/${pk}/${name}`
+      const url = `https://${host}/run/${pk}/${name}`
       const fetched = await fetch(url, {
         headers: { "Content-Type": "application/json" },
         method: "POST",
@@ -60,7 +68,7 @@
   };
   const runOnServer = async (name) => {
     const pk = toHexString(kp.publicKey);
-    const url = `https://node.lan.247420.xyz/task/run/${pk}/${name}`
+    const url = `https://${host}/task/run/${pk}/${name}`
 
     const fetched = await fetch(url, {
       headers: { "Content-Type": "application/json" },
@@ -73,7 +81,7 @@
   };
 
   const save = async (incalls, taskName) => {
-    const url = `https://node.lan.247420.xyz/task/save/${taskName}`
+    const url = `https://${host}/task/save/${taskName}`
     const fetched = await fetch(url, {
       headers: { "Content-Type": "application/json" },
       method: "POST",
@@ -82,9 +90,11 @@
     console.log(calls)
   };
   const load = async (taskName) => {
-    const url = `https://node.lan.247420.xyz/task/load/${taskName}`
+    const url = `https://${host}/task/load/${taskName}`
     const fetched = await fetch(url, { method: "GET" })
-    refresh(await fetched.json())
+    const json = await fetched.json();
+    console.log({json});
+    refresh(json)
     
   };
   function handleConnection(event) {
@@ -108,23 +118,22 @@
 
 <body>
   <Svelvet minimap controls on:connection={handleConnection}>
-    {#each calls as { name, before, after, output, stdout, stderr, result }, index}
+      {#each calls as { name, before, after, output, stdout, stderr, result }, index}
       <Call
-        id={"call-"+index}
-        bind:name
-        bind:before
-        bind:after
-        output={output.map(a=>"call-"+a)}
-        {stdout}
-        {stderr}
-        {result}
-        {remove}
-        {pk}
-        x={500 + index * 500}
-        y={250}
-      />
-    {/each}
-
+          id={"call-"+index}
+          bind:name
+          bind:before
+          bind:after
+          output={output.map(a=>"call-"+a)}
+          {stdout}
+          {stderr}
+          {result}
+          {remove}
+          {pk}
+          x={index * 1200}
+          y={250}
+        />
+      {/each}
     <ThemeToggle main="dark" alt="light" slot="toggle" />
   </Svelvet>
   <button
@@ -188,6 +197,15 @@
         placeholder="seed"
         bind:value={seed}
         on:change={newSeed}
+        class="rounded-full"
+      />
+    </div>
+    <div style="position: fixed; right: 1em;top:3em;font-weight: bolder;">
+      <input
+        style="position: absolute;right: 23px;color:gray;padding-left: 1em;z-index: -1;"
+        placeholder="host"
+        bind:value={host}
+        on:change={newHost}
         class="rounded-full"
       />
     </div>
