@@ -4,17 +4,16 @@
   import crypto from "hypercore-crypto"
   import b4a from "b4a"
   import {runCall} from "hypeeval"
-  let seed = ""
   let kp = crypto.keyPair()
   const toHexString = (bytes) => {
     return Array.from(bytes, (byte) => {
       return ("0" + (byte & 0xff).toString(16)).slice(-2)
     }).join("")
   };
-  let pk = toHexString(kp.publicKey)
+  let pk =localStorage.getItem('publicKey')
   let calls = []
   let newName
-  let host="node.lan.247420.xyz"
+  let host=localStorage.getItem('host')||''
   let taskName
   const add = () => {
     const newcalls = [...calls];
@@ -38,18 +37,19 @@
       calls= [...calls.slice(0, index), ...calls.slice(index + 1)]
     }
   }
-  const newSeed = async (event) => {
-    console.log('new seed')
-    kp = crypto.keyPair(crypto.data(b4a.from(event.target.value, "utf-8")))
-    pk = toHexString(kp.publicKey)
-    const newCalls = calls;
-    calls = [];
+  const newPublicKey = async (event) => {
+    console.log('new public key')
+    localStorage.setItem('publicKey', event.target.value)
+    pk = event.target.value
+    const newCalls = calls
+    calls = []
     setTimeout(()=>refresh(newCalls), 0)
     
   };
   const newHost = (event) => {
-    host = event.target.value;
-    console.log(host);
+    host = event.target.value
+    localStorage.setItem('host', host)
+    console.log(host)
   };
   
 
@@ -67,7 +67,6 @@
     runCall(0, calls, {}, pk, ipcCall, ()=>refresh(calls))
   };
   const runOnServer = async (name) => {
-    const pk = toHexString(kp.publicKey);
     const url = `https://${host}/task/run/${pk}/${name}`
 
     const fetched = await fetch(url, {
@@ -194,9 +193,10 @@
     <div style="position: fixed;right: 1em;top: 1em;font-weight: bolder;">
       <input
         style="position: absolute;right: 23px;color:gray;padding-left: 1em;z-index: -1;"
-        placeholder="seed"
-        bind:value={seed}
-        on:change={newSeed}
+        placeholder="Public Key"
+        type="password"
+        bind:value={pk}
+        on:change={newPublicKey}
         class="rounded-full"
       />
     </div>
