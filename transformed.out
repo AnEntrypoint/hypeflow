@@ -1,0 +1,141 @@
+#^index.html&^<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Svelvet: Database Example</title>
+</head>
+<body>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+  <div id="app"></div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
+
+#^src/Call.svelte&^<script>
+  /**
+   * @typedef {import('svelte').SvelteComponent} SvelteComponent
+   * @typedef {import('svelte-codemirror-editor').default} CodeMirrorEditor
+   * @typedef {import('@codemirror/lang-javascript').javascript} JavaScriptLang
+   * @typedef {import('@codemirror/lang-json').json} JSONLang
+   * @typedef {import('@codemirror/theme-one-dark').oneDark} OneDarkTheme
+   * @typedef {import('svelvet').Node} Node
+   * @typedef {import('svelvet').Anchor} Anchor
+   */
+
+  import { Node, Anchor } from "svelvet";
+  import CodeMirror from "svelte-codemirror-editor";
+  import { javascript } from "@codemirror/lang-javascript";
+  import { json } from "@codemirror/lang-json";
+  import { oneDark } from "@codemirror/theme-one-dark";
+
+  /** @type {string} */
+  let name;
+
+  /** @type {string} */
+  let before;
+
+  /** @type {string} */
+  let after;
+
+  /** @type {string} */
+  let id;
+
+  /** @type {number} */
+  let x;
+
+  /** @type {number} */
+  let y;
+
+  /** @type {string} */
+  let output;
+
+  /** @type {string} */
+  let stdout;
+
+  /** @type {string} */
+  let stderr;
+
+  /** @type {string} */
+  let result;
+
+  /** @type {string} */
+  let pk;
+
+  /** @type {function} */
+  let remove;
+
+  /** @type {number} */
+  let isAvailable = 0;
+
+  /** @type {number} */
+  let timer;
+
+  /**
+   * Checks if the name is available.
+   * @param {Event} e - The event object.
+   */
+  const checkAvailable = (e) => {
+    isAvailable = -1;
+    clearTimeout(timer);
+    timer = setTimeout(async () => {
+      const url = `https://node.lan.247420.xyz/run/find/${pk}/` + name;
+      const response = await fetch(url);
+      const data = await response.json();
+      isAvailable = data ? data.length : 0;
+    }, 750);
+  };
+
+  checkAvailable();
+
+  export {
+    name,
+    before,
+    after,
+    id,
+    x,
+    y,
+    output,
+    stdout,
+    stderr,
+    result,
+    pk,
+    remove
+  };
+</script>
+
+<node usedefaults {id} let:grabhandle let:selected position={{ x, y }}>
+  <div class="nodeWrapper" use:grabhandle style="max-width: 80em">
+    <div class="input">
+      <anchor id={id}_input input direction="west" nodeconnect></anchor>
+    </div>
+    <div class="output">
+      <anchor id={id}_object output direction="east" bind:connections={output} nodeconnect></anchor>
+    </div>
+    <div id="container" style="max-width: 80em">
+      <div id="heading" class="w-full" style="background-color: {isAvailable == -1 ? 'orange' : isAvailable ? 'green' : 'red'}">
+        <div>
+          <span contenteditable placeholder="ipcname" style="cursor: text;" bind:innerHTML={name} on:keydown|stoppropagation on:click|stoppropagation on:input={checkAvailable} on:mousedown|stoppropagation></span>
+          <span class="absolute right-8">{isAvailable != -1 ? (isAvailable || 0) : "🕐"}</span>
+          <span class="absolute right-2">
+            <button on:click="{() => { remove(id.split('-')[1]) }}">
+              <svg height="22px" version="1.1" style="margin-top: -2px" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 26 26" xml:space="preserve">
+                <g>
+                  <path style="fill: #FFFFFF; height: 24px;" d="M21.125,0H4.875C2.182,0,0,2.182,0,4.875v16.25C0,23.818,2.182,26,4.875,26h16.25   C23.818,26,26,23.818,26,21.125V4.875C26,2.182,23.818,0,21.125,0z M18.78,17.394l-1.388,1.387c-0.254,0.255-0.67,0.255-0.924,0   L13,15.313L9.533,18.78c-0.255,0.255-0.67,0.255-0.925-0.002L7.22,17.394c-0.253-0.256-0.253-0.669,0-0.926l3.468-3.467   L7.221,9.534c-0.254-0.256-0.254-0.672,0-0.925l1.388-1.388c0.255-0.257,0.671-0.257,0.925,0L13,10.689l3.468-3.468   c0.255-0.257,0.671-0.257,0.924,0l1.388,1.386c0.254,0.255,0.254,0.671,0.001,0.927l-3.468,3.467l3.468,3.467   C19.033,16.725,19.033,17.138,18.78,17.394z"/>
+                </g>
+              </svg>
+            </button>
+          </span>
+        </div>
+      </div>
+      <div class="node selected" on:keydown|stoppropagation on:click|stoppropagation on:mousedown|stoppropagation style="outline-style: solid; margin: 4px; margin-bottom: 8px; outline-color: yellow; outline-width: 2px; cursor: text;">
+        Before:
+        <codemirror bind:value={before} placeholder="console.log('before call', params);" lang={javascript()} theme={oneDark}></codemirror>
+      </div>
+      <div class="node selected" on

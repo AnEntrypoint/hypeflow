@@ -2,8 +2,8 @@
   import { Svelvet, ThemeToggle } from "svelvet"
   import Call from "./Call.svelte"
   import crypto from "hypercore-crypto"
-  import b4a from "b4a"
   import {runCall} from "hypeeval"
+
   let kp = crypto.keyPair()
   const toHexString = (bytes) => {
     return Array.from(bytes, (byte) => {
