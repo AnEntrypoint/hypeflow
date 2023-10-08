@@ -3,13 +3,7 @@
   import Call from "./Call.svelte"
   import crypto from "hypercore-crypto"
   import {runCall} from "hypeeval"
-
-  let kp = crypto.keyPair()
-  const toHexString = (bytes) => {
-    return Array.from(bytes, (byte) => {
-      return ("0" + (byte & 0xff).toString(16)).slice(-2)
-    }).join("")
-  };
+  import b4a from "b4a";
   let pk =localStorage.getItem('publicKey')
   let calls = []
   let newName
@@ -55,7 +49,20 @@
 
   const run = (calls) => {
     const ipcCall = async (pk, name, params) => {
-      const url = `https://${host}/run/${pk}/${name}`
+      const subFetch = await fetch(
+        `http://localhost:3011/vault/getSub/${name}`,
+        {
+          method: "POST",
+          body: JSON.stringify({ key: { publicKey:pk } }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log('fetched')
+      const sub = await subFetch.json();
+      const url = `https://${host}/run/key/${sub.publicKey}`
+      console.log({url})
       const fetched = await fetch(url, {
         headers: { "Content-Type": "application/json" },
         method: "POST",
